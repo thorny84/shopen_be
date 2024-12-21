@@ -1,0 +1,10 @@
+ktor:
+    application:
+        modules:
+            - com.lazzaro.ApplicationKt.module
+    deployment:
+        port: 8080
+postgres:
+  url: "$DATABASE_URL"
+  user: "$DATABASE_USER"
+  password: "$DATABASE_PASSWORD"

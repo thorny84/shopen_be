@@ -1,0 +1,48 @@
+services:
+  db:
+    image: postgres:latest
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: mysecretpassword
+    ports:
+      - "5432:5432"
+    networks:
+      - my-net
+
+  pgadmin:
+    image: dpage/pgadmin4
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: user@domain.com
+      PGADMIN_DEFAULT_PASSWORD: catsarecool
+    networks:
+      - my-net
+
+  auth:
+    build: ./shopen-auth
+    ports:
+      - "8081:8080"
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: "jdbc:postgresql://db:5432/authdb"
+      DATABASE_USER: authuser
+      DATABASE_PASSWORD: authUserPass
+    networks:
+      - my-net
+  
+  api_gateway:
+    build: ./shopen-api-gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - auth
+    networks:
+      - my-net
+
+volumes:
+  db_data:
+networks:
+  my-net:
